@@ -6,24 +6,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bubbles App</title>
     <link href='https://fonts.googleapis.com/css?family=Baloo Bhai' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Baloo Bhai';font-size: 22px;
+            font-family: 'Baloo Bhai';
+            font-size: 22px;
             top: 0px;
             left: 0px;
         }
-        .container{
+
+        .container {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
-        canvas{
-            border: 2px solid black;
+
+        .container h1 {
+            margin: 10px;
         }
-        button{
-            font-family: 'Baloo Bhai';font-size: 22px;
-            margin-top: 20px;
+
+        canvas {
+            border: 3px solid black;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: flex;
+            flex-direction: row-reverse;
+            width: 500px;
+        }
+        button {
+            background-color: white;
+            border: 3px solid black;
+            padding: 8px 20px;
+            font-family: "roboto mono";
+            font-size: 15px;
+            cursor: pointer;
+            box-shadow: 3px 3px black;
+        }
+        .custom-cursor {
             cursor: pointer;
         }
     </style>
@@ -32,12 +55,12 @@
 <body>
     <div class="container">
         <h1>Bubbles App</h1>
-        <canvas></canvas> 
-        <button id="Reset">
-            Reset
-        </button>
+        <canvas></canvas>
+        <div class="btn">
+            <button id="Reset">Reset</button>
+        </div>
     </div>
-    <script src="canvas2.js"></script>
+    <script src="canvas.js"></script>
 </body>
 
 </html>

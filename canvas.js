@@ -1,147 +1,140 @@
-let canvas = document.querySelector('canvas');
-
+const canvas = document.querySelector('canvas');
 let c = canvas.getContext('2d');
-
-canvas.width = 600;
 canvas.height = 400;
+canvas.width = 600;
 
-const colors = ['yellow', 'red', 'green', 'blue'];
+class CircleAndArrow {
+    constructor(x, y, radius, color) {
+        this.arrow_x = x + 440;
+        this.arrow_y = y;
+        this.circle_x = x;
+        this.circle_y = y;
+        this.radius = radius;
+        this.color = color;
+        this.isAnimating = false;
+    }
 
-window.onload = circle(), arrows();
-
-function circle() {
-    let x = 0;
-
-    for (var i = 0; i < 4; i++) {
-
+    draw() {
         c.beginPath();
-        c.fillStyle = colors[i];
-        c.arc(60, 50 + x, 30, 0, Math.PI * 2, true);
+        c.fillStyle = this.color;
+        c.arc(this.circle_x, this.circle_y, this.radius, 0, Math.PI * 2, true);
         c.fill();
 
         c.beginPath();
-        c.arc(60, 50 + x, 30, 0, Math.PI * 2, true);
+        c.arc(this.circle_x, this.circle_y, this.radius, 0, Math.PI * 2, true);
         c.stroke();
 
-        x += 100;
-    }
-}
-
-
-function arrows() {
-    let x = 0;
-    for (var i = 0; i < 4; i++) {
         c.beginPath();
         c.fillStyle = "black";
-        c.moveTo(500, 50 + x);
-        c.lineTo(515, 30 + x);
-        c.lineTo(515, 45 + x);
-        c.lineTo(550, 45 + x);
-        c.lineTo(550, 55 + x);
-        c.lineTo(515, 55 + x);
-        c.lineTo(515, 70 + x);
-        c.lineTo(500, 50 + x);
+        c.moveTo(this.arrow_x, this.arrow_y);
+        c.lineTo(this.arrow_x + 15, this.arrow_y - 20);
+        c.lineTo(this.arrow_x + 15, this.arrow_y - 5);
+        c.lineTo(this.arrow_x + 50, this.arrow_y - 5);
+        c.lineTo(this.arrow_x + 50, this.arrow_y + 5);
+        c.lineTo(this.arrow_x + 15, this.arrow_y + 5);
+        c.lineTo(this.arrow_x + 15, this.arrow_y + 20);
+        c.lineTo(this.arrow_x, this.arrow_y);
         c.stroke();
         c.fill();
-        x += 100;
+    }
+
+    update(color) {
+        this.color = color;
+        this.draw();
     }
 }
 
-function move() {
+let circleAndArrow = [];
+const colors = ['yellow', 'blue', 'red', 'green'];
 
-    let n = 0;
-    animate();
+window.onload = drawCircle();
+
+function drawCircle() {
+    circleAndArrow = new Array();
+    var y = 0;
+    for (let i = 0; i < 4; i++) {
+        circleAndArrow[i] = new CircleAndArrow(60, 50 + y, 30, colors[i]);
+        circleAndArrow[i].draw();
+        y += 100;
+    }
+}
+
+let animateId = new Array(4);
+
+function move(n) {
+
+    if (circleAndArrow[n].isAnimating) {
+        return;
+    }
+
+    circleAndArrow[n].isAnimating = true;
+
+    if (circleAndArrow[n].arrow_x > 90)
+        animate();
 
     function animate() {
-
-        var animateId = requestAnimationFrame(animate);
+        animateId[n] = requestAnimationFrame(animate);
 
         c.clearRect(0, 0, 600, 400);
 
-        circle();
+        for (var i = 0; i < 4; i++) {
+            circleAndArrow[i].draw();
+        }
 
-        c.beginPath();
-        c.fillStyle = "black";
-        c.moveTo(500 - n, 50);
-        c.lineTo(515 - n, 30);
-        c.lineTo(515 - n, 45);
-        c.lineTo(550 - n, 45);
-        c.lineTo(550 - n, 55);
-        c.lineTo(515 - n, 55);
-        c.lineTo(515 - n, 70);
-        c.lineTo(500 - n, 50);
-        c.stroke();
-        c.fill();
-        n += 2;
+        circleAndArrow[n].arrow_x -= 2;
 
-        c.beginPath();
-        c.fillStyle = "black";
-        c.moveTo(500, 150);
-        c.lineTo(515, 130);
-        c.lineTo(515, 145);
-        c.lineTo(550, 145);
-        c.lineTo(550, 155);
-        c.lineTo(515, 155);
-        c.lineTo(515, 170);
-        c.lineTo(500, 150);
-        c.stroke();
-        c.fill();
-
-        c.beginPath();
-        c.fillStyle = "black";
-        c.moveTo(500, 250);
-        c.lineTo(515, 230);
-        c.lineTo(515, 245);
-        c.lineTo(550, 245);
-        c.lineTo(550, 255);
-        c.lineTo(515, 255);
-        c.lineTo(515, 270);
-        c.lineTo(500, 250);
-        c.stroke();
-        c.fill();
-
-        c.beginPath();
-        c.fillStyle = "black";
-        c.moveTo(500, 350);
-        c.lineTo(515, 330);
-        c.lineTo(515, 345);
-        c.lineTo(550, 345);
-        c.lineTo(550, 355);
-        c.lineTo(515, 355);
-        c.lineTo(515, 370);
-        c.lineTo(500, 350);
-        c.stroke();
-        c.fill();
-
-        if (n == 412) {
-            c.beginPath();
-            c.fillStyle = "grey";
-            c.arc(60, 50, 30, 0, Math.PI * 2, true);
-            c.fill();
-
-            c.beginPath();
-            c.arc(60, 50, 30, 0, Math.PI * 2, true);
-            c.stroke();
-            cancelAnimationFrame(animateId);
+        if (circleAndArrow[n].arrow_x == 90) {
+            circleAndArrow[n].update("grey");
+            cancelAnimationFrame(animateId[n]);
+            circleAndArrow[n].isAnimating = false;
         }
     }
-
 }
-
-document.addEventListener('DOMContentLoaded', function () {
-    const button = document.getElementById('yellowBall');
-    button.addEventListener("click", move);
-});
 
 document.addEventListener('DOMContentLoaded', function () {
     const button = document.getElementById('Reset');
     button.addEventListener("click", () => {
+
+        for(var i= 0; i < animateId.length; i++)
+        if (animateId[i]) {
+            cancelAnimationFrame(animateId[i]);
+        }
+
         c.clearRect(0, 0, 600, 400);
-        circle();
-        arrows();
+        drawCircle();
     });
-})
+});
 
-// move();
+var mouse = {
+    x: undefined,
+    y: undefined
+}
 
-console.log(canvas);
+let rect = canvas.getBoundingClientRect();
+
+window.addEventListener('mousemove', function (event) {
+    mouse.x = event.x - rect.left;
+    mouse.y = event.y - rect.top;
+
+    for (var i = 0; i < 4; i++) {
+        if (mouse.x - circleAndArrow[i].circle_x < 30 && mouse.x - circleAndArrow[i].circle_x > -30 && mouse.y - circleAndArrow[i].circle_y < 30 && mouse.y - circleAndArrow[i].circle_y > -30) {
+            document.body.classList.add('custom-cursor');
+            break;
+        } else {
+            document.body.classList.remove('custom-cursor');
+        }
+    }
+});
+
+window.addEventListener('click', function (event) {
+    mouse.x = event.x - rect.left;
+    mouse.y = event.y - rect.top;
+
+    if (mouse.x > 0 && mouse.y > 0) {
+        for (var i = 0; i < 4; i++) {
+            if (mouse.x - circleAndArrow[i].circle_x < 30 && mouse.x - circleAndArrow[i].circle_x > -30 && mouse.y - circleAndArrow[i].circle_y < 30 && mouse.y - circleAndArrow[i].circle_y > -30) {
+                move(i);
+            }
+        }
+    }
+});
